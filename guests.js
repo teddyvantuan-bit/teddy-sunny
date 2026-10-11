@@ -1,5 +1,32 @@
 /* Published guest names for short, readable invitation links.
    The link maker (tao-link.html) can export a replacement for this file. */
 window.WEDDING_GUESTS = Object.freeze({
-  'chi-phuong': 'Chị Phương'
+  "chi-phuong": "Chị Phương",
+  "anh-pha": "Anh Pha",
+  "chi-bong": "Chị Bông",
+  "chi-nhat": "Chị Nhật",
+  "chi-khanh": "Chị Khánh",
+  "chi-lani": "Chị Lani",
+  "gia-dinh-chi-meegan": "Gia đình chị Meegan",
+  "anh-thai": "Anh Thái",
+  "gia-dinh-chi-huynh": "Gia đình chị Huỳnh",
+  "anh-chi-xy": "Anh chị Xy",
+  "anh-kido": "Anh Kido",
+  "albert-cu-sang": "Albert Cu Sáng",
+  "em-chuyen": "Em Chuyên",
+  "em-hieu": "Em Hiếu",
+  "em-giang": "Em Giang",
+  "em-huyen": "Em Huyền",
+  "chi-huyen-trang": "Chị Huyền Trang",
+  "chi-duyen": "Chị Duyên",
+  "em-thao": "Em Thảo",
+  "em-duyen": "Em Duyên",
+  "chi-bee": "Chị Bee",
+  "em-nguyet": "Em Nguyệt",
+  "ban-ken": "Bạn Ken",
+  "em-ben": "Em Ben",
+  "chi-tram": "Chị Trâm",
+  "em-phuong": "Em Phương",
+  "chi-ut": "Chị Út",
+  "chi-hong": "Chị Hồng"
 });
