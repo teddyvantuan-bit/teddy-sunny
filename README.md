@@ -27,6 +27,6 @@ Thiết kế được viết lại từ đầu theo bố cục tham khảo của
 ## Tính năng mới (09/2026)
 
 - **Xác nhận tham dự + lời chúc** lưu vào Google Sheet "Thiệp cưới – Xác nhận tham dự & Lời chúc" (script trong `backend/Code.gs`, link web app trong `config.js`). Bỏ tick "Hiện trên web" để ẩn một lời chúc.
-- **Link mời riêng:** mở `tao-link.html`, dán danh sách tên khách → mỗi khách một link `?to=Tên&side=bride|groom`.
+- **Link mời riêng:** mở `tao-link.html`, dán danh sách tên khách → mỗi khách một link gọn như `?invite=chi-phuong&side=bride`. Tên có dấu nằm trong `guests.js`. Với khách mới, tải file `guests.js` từ trang tạo link rồi thay file cùng tên trong repo trước khi gửi link; hoặc gửi danh sách để mình cập nhật. Link cũ `?to=Tên` vẫn hoạt động. Tab trình duyệt hiện tên khách trước, ví dụ “Chị Phương | Trân trọng kính mời”.
 - **Hiệu ứng:** chữ/ảnh hiện dần khi cuộn (1,3s), cánh hoa rơi, ảnh bìa zoom chậm (`extras.js`, `extras.css`).
 - **Ảnh xem trước khi chia sẻ link:** `assets/og.jpg`.

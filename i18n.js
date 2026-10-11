@@ -12,7 +12,7 @@ const translations = {
     rsvpThanksYes: name => `Cảm ơn ${name}! Chúng mình rất vui được gặp bạn trong ngày cưới 💕`,
     rsvpThanksNo: name => `Cảm ơn ${name} đã báo cho chúng mình. Hẹn gặp bạn dịp khác nhé!`,
     wishThanks: 'Cảm ơn lời chúc của bạn! 💕', sendFailed: 'Chưa gửi được. Bạn kiểm tra mạng rồi thử lại nhé.',
-    pageTitle: 'Văn Tuấn - Mỹ Dung | Thiệp cưới',
+    pageTitle: 'Văn Tuấn - Mỹ Dung | Thiệp cưới', guestPageTitle: name => `${name} | Trân trọng kính mời`,
     description: 'Thiệp cưới của Nguyễn Văn Tuấn và Huỳnh Thị Mỹ Dung.',
     welcome: 'Welcome to our wedding',
     heroQuote: 'I love three things in this world:<br />the sun, the moon and you.<br />The sun for morning, the moon for night,<br />and you forever.',
@@ -81,7 +81,7 @@ const translations = {
     rsvpThanksYes: name => `Thank you, ${name}! We can't wait to see you 💕`,
     rsvpThanksNo: name => `Thank you for letting us know, ${name}. We'll miss you!`,
     wishThanks: 'Thank you for your wishes! 💕', sendFailed: 'Could not send. Please check your connection and try again.',
-    pageTitle: 'Văn Tuấn - Mỹ Dung | Wedding Invitation',
+    pageTitle: 'Văn Tuấn - Mỹ Dung | Wedding Invitation', guestPageTitle: name => `${name} | You're Invited`,
     description: 'Wedding invitation for Nguyễn Văn Tuấn and Huỳnh Thị Mỹ Dung.',
     welcome: 'Welcome to our wedding',
     heroQuote: 'I love three things in this world:<br />the sun, the moon and you.<br />The sun for morning, the moon for night,<br />and you forever.',
@@ -151,7 +151,8 @@ function translate(key) { return translations[currentLanguage][key]; }
 function applyLanguage(language, updateUrl = false) {
   currentLanguage = language;
   document.documentElement.lang = language;
-  document.title = translate('pageTitle');
+  const guestName = window.WEDDING_GUEST?.name;
+  document.title = guestName ? translate('guestPageTitle')(guestName) : translate('pageTitle');
   document.querySelector('meta[name="description"]').content = translate('description');
   document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = translate(element.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(element => { element.innerHTML = translate(element.dataset.i18nHtml); });

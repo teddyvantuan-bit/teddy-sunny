@@ -1,8 +1,7 @@
 /* Opening envelope: the guest taps the wax seal, the envelope opens, the letter
    rises, the curtains part, and the invitation (and the music) begins. */
 (() => {
-  const params = new URLSearchParams(location.search);
-  const invitee = (params.get('to') || '').trim().slice(0, 60);
+  const invitee = window.WEDDING_GUEST?.name || '';
   const t = key => (window.weddingI18n ? weddingI18n.t(key) : '');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;

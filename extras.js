@@ -128,8 +128,8 @@
     requestAnimationFrame(now => { last = now; frame(now); });
   }
 
-  /* ---------- Personal guest name: ?to=Anh%20Minh&side=bride ---------- */
-  const invitee = (params.get('to') || '').trim().slice(0, 60);
+  /* ---------- Personal guest name from ?invite=slug or legacy ?to=Name ---------- */
+  const invitee = window.WEDDING_GUEST?.name || '';
   const invitedSide = params.get('side');
   if (invitee) {
     document.getElementById('guest-card').hidden = false;
