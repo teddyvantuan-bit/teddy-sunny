@@ -253,7 +253,6 @@
   const feed = document.getElementById('wish-feed');
   const feedList = feed.querySelector('.wish-feed-list');
   let wishes = [], cursor = 0, feedTimer = null, feedClosed = false;
-  try { feedClosed = sessionStorage.getItem('wish-feed-closed') === '1'; } catch (_) {}
   function bubble(w) {
     const item = document.createElement('p');
     item.className = 'wish-bubble';
@@ -295,13 +294,21 @@
     feedClosed = true;
     clearInterval(feedTimer);
     feedTimer = null;
-    try { sessionStorage.setItem('wish-feed-closed', '1'); } catch (_) {}
   });
   if (API) {
-    fetch(API).then(r => r.json()).then(data => {
-      wishes = (data.wishes || []).filter(w => w && w.name && w.wish);
-      setTimeout(startFeed, 2500);
-    }).catch(() => {});
+    async function loadWishes() {
+      try {
+        const response = await fetch(API, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Unable to load wishes');
+        const data = await response.json();
+        if (!Array.isArray(data.wishes)) throw new Error('Invalid wish response');
+        wishes = data.wishes.filter(w => w && w.name && w.wish);
+        setTimeout(startFeed, 2500);
+      } catch (_) {
+        setTimeout(loadWishes, 30000);
+      }
+    }
+    loadWishes();
   }
 
   window.refreshExtras = () => {};
