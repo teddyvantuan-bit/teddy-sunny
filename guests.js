@@ -28,5 +28,11 @@ window.WEDDING_GUESTS = Object.freeze({
   "chi-tram": "Chị Trâm",
   "em-phuong": "Em Phương",
   "chi-ut": "Chị Út",
-  "chi-hong": "Chị Hồng"
+  "chi-hong": "Chị Hồng",
+  "aunty-yun-yun": "Aunty Yun Yun",
+  "aunty-henny": "Aunty Henny",
+  "pak-hengky": "Pak Hengky",
+  "farid": "Farid",
+  "hafiz": "Hafiz",
+  "aiman": "Aiman"
 });
