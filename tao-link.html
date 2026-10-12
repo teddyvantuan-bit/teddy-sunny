@@ -1,120 +1,13 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>Tạo link mời riêng</title>
-    <style>
-      :root { --ink: #2d2927; --muted: #7a716c; --line: #e3d8d2; --accent: #c91212; --bg: #f7efea; --card: #fff; }
-      * { box-sizing: border-box; }
-      body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; }
-      main { max-width: 720px; margin: 0 auto; padding: 32px 16px 60px; }
-      h1 { margin: 0 0 6px; font-size: 26px; }
-      p { color: var(--muted); margin: 0 0 18px; }
-      .card { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px #8a4b4b14; margin-bottom: 18px; }
-      label { display: block; font-weight: 600; margin-bottom: 8px; }
-      textarea { width: 100%; min-height: 160px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; font: inherit; resize: vertical; }
-      .sides { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 16px; }
-      .sides label { display: flex; align-items: center; gap: 6px; font-weight: 400; margin: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 20px; cursor: pointer; }
-      button { border: 0; border-radius: 24px; padding: 11px 20px; background: var(--accent); color: #fff; font: 600 14px system-ui, sans-serif; cursor: pointer; }
-      button.ghost { background: #f1e8e4; color: var(--ink); }
-      ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-      li { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
-      li strong { display: block; }
-      li code { display: block; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
-      .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-      .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: #2d2927; color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity .2s; }
-      .toast.show { opacity: 1; }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Tạo link mời riêng cho từng khách</h1>
-      <p>Mỗi khách nhận một link ngắn như <code>?invite=chi-phuong</code>. Thiệp vẫn hiện tên có dấu và điền sẵn tên trong phần xác nhận tham dự.</p>
-      <div class="card">
-        <label for="names">Danh sách khách (mỗi dòng một tên)</label>
-        <textarea id="names" placeholder="Anh Minh&#10;Chị Lan &amp; gia đình&#10;Bạn Hùng"></textarea>
-        <div class="sides" role="radiogroup" aria-label="Khách mời bên">
-          <label><input type="radio" name="side" value="" checked /> Không chọn bên</label>
-          <label><input type="radio" name="side" value="bride" /> Khách Nhà Gái (18/10)</label>
-          <label><input type="radio" name="side" value="groom" /> Khách Nhà Trai (25/10)</label>
-        </div>
-        <button id="make" type="button">Tạo link</button>
-      </div>
-      <div class="card" id="result" hidden>
-        <div class="actions">
-          <button id="copy-all" type="button">Sao chép tất cả</button>
-          <button id="copy-sheet" type="button" class="ghost">Sao chép để dán vào Excel/Sheet</button>
-          <button id="download-guests" type="button" class="ghost">Tải file tên khách</button>
-        </div>
-        <p id="publish-note" hidden></p>
-        <ul id="list"></ul>
-      </div>
-    </main>
-    <div class="toast" id="toast" role="status"></div>
-    <script src="guests.js?v=20261012b"></script>
-    <script>
-      const base = new URL('./', location.href).href;
-      const toast = document.getElementById('toast');
-      let rows = [];
-      let directory = { ...window.WEDDING_GUESTS };
-      function slugify(name) {
-        return name.toLowerCase().replace(/đ/g, 'd').normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '').slice(0, 60).replace(/-$/, '');
-      }
-      function notify(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1800); }
-      async function copy(text) { try { await navigator.clipboard.writeText(text); notify('Đã sao chép'); } catch (_) { notify('Không sao chép được'); } }
-      document.getElementById('make').addEventListener('click', () => {
-        const side = document.querySelector('input[name="side"]:checked').value;
-        directory = { ...window.WEDDING_GUESTS };
-        rows = document.getElementById('names').value.split('\n').map(n => n.trim().slice(0, 60)).filter(Boolean).map(name => {
-          const stem = slugify(name) || 'khach-moi';
-          let slug = stem;
-          let suffix = 2;
-          while (directory[slug] && directory[slug] !== name) slug = `${stem}-${suffix++}`;
-          const isPublished = directory[slug] === name;
-          directory[slug] = name;
-          const url = new URL(base);
-          url.searchParams.set('invite', slug);
-          if (side) url.searchParams.set('side', side);
-          return { name, url: url.href, isPublished };
-        });
-        const list = document.getElementById('list');
-        list.replaceChildren(...rows.map(r => {
-          const li = document.createElement('li');
-          const info = document.createElement('div');
-          const strong = document.createElement('strong');
-          strong.textContent = r.name + (r.isPublished ? '' : ' · chưa đăng');
-          const code = document.createElement('code');
-          code.textContent = r.url;
-          info.append(strong, code);
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'ghost';
-          btn.textContent = 'Sao chép';
-          btn.addEventListener('click', () => copy(r.url));
-          li.append(info, btn);
-          return li;
-        }));
-        document.getElementById('result').hidden = !rows.length;
-        const unpublished = rows.filter(r => !r.isPublished).length;
-        const note = document.getElementById('publish-note');
-        note.hidden = !unpublished;
-        note.textContent = unpublished ? `${unpublished} tên mới chưa có trên website. Tải file tên khách và thay guests.js trong repo GitHub trước khi gửi các link này; hoặc gửi danh sách cho mình để mình đăng giúp.` : '';
-      });
-      document.getElementById('copy-all').addEventListener('click', () => copy(rows.map(r => `${r.name}: ${r.url}`).join('\n')));
-      document.getElementById('copy-sheet').addEventListener('click', () => copy(rows.map(r => `${r.name}\t${r.url}`).join('\n')));
-      document.getElementById('download-guests').addEventListener('click', () => {
-        const content = `window.WEDDING_GUESTS = Object.freeze(${JSON.stringify(directory, null, 2)});\n`;
-        const href = URL.createObjectURL(new Blob([content], { type: 'application/javascript;charset=utf-8' }));
-        const link = document.createElement('a');
-        link.href = href;
-        link.download = 'guests.js';
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(href), 1000);
-      });
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tạo lời mời | Văn Tuấn - Mỹ Dung</title>
+  <script>location.replace(new URL('khach-moi.html', location.href).href);</script>
+</head>
+<body>
+  <p>Trang tạo lời mời đã chuyển sang <a href="khach-moi.html">Khách mời &amp; thiệp cưới</a>.</p>
+</body>
 </html>
